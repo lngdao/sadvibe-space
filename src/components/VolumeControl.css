@@ -1,0 +1,30 @@
+.volume-control {
+  display: flex;
+  align-items: center;
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.volume-bar {
+  -webkit-appearance: none;
+  position: absolute;
+  width: 70px;
+  height: 3px;
+  outline: none;
+  border: none;
+  background: #d3d3d3;
+  margin-right: 10px;
+  -webkit-transition: 0.5s;
+  transform: translateX(100%);
+  transition: visibility 0s, opacity 0.3s, transform .2s ease-in-out;
+}
+
+.volume-bar::-webkit-slider-thumb {
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background: #333;
+}
