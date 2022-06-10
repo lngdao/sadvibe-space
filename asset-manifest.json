@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/fckin-bad-player/static/css/main.951f0b1d.css",
+    "main.js": "/fckin-bad-player/static/js/main.5dd326e5.js",
+    "index.html": "/fckin-bad-player/index.html",
+    "main.951f0b1d.css.map": "/fckin-bad-player/static/css/main.951f0b1d.css.map",
+    "main.5dd326e5.js.map": "/fckin-bad-player/static/js/main.5dd326e5.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.951f0b1d.css",
+    "static/js/main.5dd326e5.js"
+  ]
+}
