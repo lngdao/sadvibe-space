@@ -1,7 +1,7 @@
 {
   "name": "fckin-bad-player",
   "version": "0.1.0",
-  "homepage": "https://lngdao.github.io/fckin-bad-player",
+  "homepage": "https://lngdao.github.io/fckin-sad-player",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
@@ -13,6 +13,7 @@
     "@types/react-dom": "^18.0.5",
     "axios": "^0.27.2",
     "gh-pages": "^4.0.0",
+    "lodash": "^4.17.21",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-feather": "^2.0.10",
@@ -46,5 +47,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.182"
   }
 }
