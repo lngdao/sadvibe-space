@@ -4,6 +4,7 @@ export type TAudio = {
   _id: string
   name: string
   singer: string
+  audioUrl: string
 }
 
 export interface IAudioSlice {

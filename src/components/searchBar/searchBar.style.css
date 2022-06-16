@@ -1,0 +1,16 @@
+
+.searchbar {
+  margin-bottom: 20px;
+  display: flex;
+  border-bottom: 1px solid rgb(183, 183, 183);
+}
+
+.searchbar-input {
+  flex: 1;
+  outline: none;
+  border: none;
+  background: #F9F9F9;
+  height: 35px;
+  font-size: 18px;
+  padding-right: 7px;
+}

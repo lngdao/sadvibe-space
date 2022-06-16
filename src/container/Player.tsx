@@ -11,21 +11,17 @@ import {
   SkipBack,
   SkipForward,
 } from 'react-feather';
-import CommentView from '../components/CommentView';
+import CommentView from '../components/commentView/CommentView';
 import PlayerProgressBar from '../components/PlayerProgressBar';
-import TrackList from '../components/TrackList';
-import VolumeControl from '../components/VolumeControl';
+import TrackList from '../components/trackList/TrackList';
+import VolumeControl from '../components/volumeControl/VolumeControl';
 import { BASE_URL } from '../config';
 import { useConfigStore, useStore } from '../store';
 import { toHHMMSS } from '../utils/funcUtils';
 import './Player.style.css';
 
 function Player() {
-  const [player] = useState<HTMLAudioElement>(
-    new Audio(
-      'https://mega.nz/file/nzIkFBCR#oQdkLKQafPk3PQcGrMv5ilvIDfazv6WMBcXsfy5I788'
-    )
-  );
+  const [player] = useState<HTMLAudioElement>(new Audio());
   const [showCommentView, setShowCommentView] = useState<boolean>(false);
   const [sidebar, setSidebar] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
@@ -120,7 +116,7 @@ function Player() {
 
   useEffect(() => {
     if (audio) {
-      player.src = `${BASE_URL}audio/${audio._id}`;
+      player.src = audio.audioUrl;
       setPlaying(false);
       assignEventsToPlayer();
     }
@@ -134,9 +130,11 @@ function Player() {
     <div className="wrapper">
       <div className="player">
         <TrackList
+          playerPlayStatus={playing}
           listAudio={listAudio}
           sidebar={sidebar}
           useToggleSidebar={toggleSidebar}
+          onRightStatusClick={onPlayPauseClickHandler}
         />
         <CommentView
           showCommentView={showCommentView}

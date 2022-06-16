@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Volume, Volume1, Volume2 } from 'react-feather';
-import { useStore } from '../store';
+import { Volume, Volume1, Volume2, VolumeX } from 'react-feather';
+import { useStore } from '../../store';
 
 import './VolumeControl.css';
 
@@ -24,8 +24,9 @@ function VolumeControl() {
       },
     };
 
-    if (volume == 0) icon = <Volume {...iconConfig} />;
-    else if (volume < 0.6) icon = <Volume1 {...iconConfig} />;
+    if (volume == 0) icon = <VolumeX {...iconConfig} />;
+    else if (volume < 0.3) icon = <Volume {...iconConfig} />;
+    else if (volume < 0.7) icon = <Volume1 {...iconConfig} />;
     else icon = <Volume2 {...iconConfig} />;
 
     return icon;

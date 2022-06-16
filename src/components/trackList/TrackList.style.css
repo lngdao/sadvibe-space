@@ -11,6 +11,7 @@
   transition: opacity 0.3s ease-out;
   border-radius: 10px;
   padding: 30px 30px;
+  flex-flow: column;
 }
 
 .tracklist-title {
@@ -21,30 +22,33 @@
 }
 
 .tracklist-list {
+  display: flex;
   margin-top: 15px;
-  height: 490px;
   overflow: scroll;
+  flex: 1;
 }
 
 .tracklist-list::-webkit-scrollbar {
   display: none;
 }
 
+.tracklist-list > ul {
+  width: 100%;
+}
+
 .tracklist-item {
+  width: 100%;
   list-style: none;
   margin-top: 15px;
-  cursor: pointer;
   font-size: 18px;
   color: #333;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .tracklist-btm {
-  left: 30px;
-  right: 30px;
-  /* height: 100px; */
-  position: absolute;
-  bottom: 30px;
-  cursor: pointer;
+  padding-top: 15px;
 }
 
 .tracklist-btm > div {
@@ -56,5 +60,18 @@
 .tracklist-btm > div > h3 {
   margin-left: 5px;
   font-weight: 600;
+}
+
+.emptyList {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.emptyList > h4 {
+  color: #333;
+  margin-top: 15px;
 }
 
