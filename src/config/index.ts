@@ -1,1 +1,0 @@
-export const BASE_URL = 'https://player-backend.herokuapp.com/api/'
