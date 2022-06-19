@@ -5,9 +5,11 @@
 
 ![screenshot](https://i.imgur.com/Dw9PmIe.png "screenshot")
 
+![screenshot](https://i.imgur.com/mSOwtv2.png "screenshot")
+
 ## Link
 
-> https://lngdao.github.io/fckin-sad-player
+> https://www.fckinsadvibe.space/
 
 
 
