@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/fckin-sad-player/static/css/main.5aa5378f.css",
-    "main.js": "/fckin-sad-player/static/js/main.7be56dfa.js",
-    "index.html": "/fckin-sad-player/index.html",
-    "main.5aa5378f.css.map": "/fckin-sad-player/static/css/main.5aa5378f.css.map",
-    "main.7be56dfa.js.map": "/fckin-sad-player/static/js/main.7be56dfa.js.map"
+    "main.css": "/static/css/main.5aa5378f.css",
+    "main.js": "/static/js/main.b5d6afbb.js",
+    "index.html": "/index.html",
+    "main.5aa5378f.css.map": "/static/css/main.5aa5378f.css.map",
+    "main.b5d6afbb.js.map": "/static/js/main.b5d6afbb.js.map"
   },
   "entrypoints": [
     "static/css/main.5aa5378f.css",
-    "static/js/main.7be56dfa.js"
+    "static/js/main.b5d6afbb.js"
   ]
 }
