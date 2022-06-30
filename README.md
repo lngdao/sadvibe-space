@@ -1,7 +1,7 @@
 
 # Music player
 
-![screenshot](https://i.imgur.com/K0iNlP9.png "screenshot")
+![screenshot](https://i.imgur.com/2bt8z71.png "screenshot")
 
 ![screenshot](https://i.imgur.com/Dw9PmIe.png "screenshot")
 
