@@ -1,7 +1,7 @@
 {
   "name": "fckin-bad-player",
   "version": "0.1.0",
-  "homepage": "https://lngdao.github.io/fckin-sad-player",
+  "homepage": "https://lngdao.github.io",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
@@ -18,12 +18,17 @@
     "react-collapsed": "^3.3.2",
     "react-dom": "^18.1.0",
     "react-feather": "^2.0.10",
+    "react-loader-spinner": "^5.1.5",
+    "react-lrc": "^2.1.5",
     "react-scripts": "5.0.1",
+    "rxjs": "^7.5.5",
+    "styled-components": "^5.3.5",
     "typescript": "^4.7.2",
     "web-vitals": "^2.1.4",
     "zustand": "^4.0.0-rc.1"
   },
   "scripts": {
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -49,6 +54,7 @@
     ]
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.182"
+    "@types/lodash": "^4.14.182",
+    "@types/styled-components": "^5.1.25"
   }
 }

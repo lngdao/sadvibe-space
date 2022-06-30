@@ -3,16 +3,20 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #333;
+  background-size: cover !important;
+  transition: background 0.3s ease-in-out;
 }
 
 .player {
   width: 550px;
-  height: 70%;
-  background: #F9F9F9;
+  min-height: 650px;
+  height: 65%;
+  background: #f9f9f9;
   border-radius: 10px;
   position: relative;
   padding: 30px 30px;
+  display: flex;
+  flex-flow: column;
 }
 
 .player-control__top {
@@ -64,20 +68,32 @@
 }
 
 .player-center {
-  position: absolute;
+  /* position: absolute; */
   display: flex;
   justify-content: center;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-60%);
+  align-items: center;
+  /* top: 50%;
+  left: 50%; */
+  /* transform: translateX(-50%) translateY(-60%); */
+  flex: 1;
+  /* overflow: hidden; */
 }
 
 .player-control__btm {
   height: 120px;
-  position: absolute;
-  bottom: 30px;
+  /* position: absolute; */
+  /* bottom: 30px;
   left: 30px;
-  right: 30px;
+  right: 30px; */
+}
+
+.lrc {
+  overflow: scroll!important;
+}
+
+.lrc::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .progress-bar {
@@ -97,7 +113,7 @@
 } */
 
 .progress-bar > .done {
-  background: #333;
+  /* background: #333; */
   border-radius: 100000px;
   position: absolute;
   left: 0;
@@ -119,12 +135,16 @@
   right: 0;
 }
 
+.progress-container {
+  position: relative;
+}
+
 .progress-container > .handle-ctr {
   position: absolute;
   width: 0px;
   overflow: visible;
   transform: translateY(-65%);
-  left: 0;
+  /* left: 50px; */
 }
 
 .progress-container .handle-ctr .time-span {
@@ -182,3 +202,17 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.emptyList {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.emptyList > h4 {
+  color: #333;
+  margin-top: 15px;
+}
+

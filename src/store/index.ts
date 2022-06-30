@@ -3,8 +3,9 @@ import { devtools, persist } from 'zustand/middleware';
 import createAudioSlice, { IAudioSlice } from './createAudioSlice';
 import createConfigSlice, { IConfigSlice } from './createConfigSlice';
 import createVolumeSlice, { IVolumeSlice } from './createVolumeSlice';
+import createSettingSlice, { ISettingSlice } from './createSettingSlice';
 
-interface IStore extends IAudioSlice, IVolumeSlice {}
+interface IStore extends IAudioSlice, IVolumeSlice, ISettingSlice {}
 
 export type SliceStateCreator<
   S extends State,
@@ -19,6 +20,7 @@ export const useStore = create<IStore>()(
       (set, get, api) => ({
         ...createAudioSlice(set, get, api),
         ...createVolumeSlice(set, get, api),
+        ...createSettingSlice(set, get, api),
       }),
       { name: 'storage' }
     )

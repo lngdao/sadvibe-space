@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Disc,
   Menu,
@@ -12,18 +12,22 @@ import {
   SkipForward,
 } from 'react-feather';
 import CommentView from '../components/commentView/CommentView';
+import Lyrics from '../components/Lyrics';
 import PlayerProgressBar from '../components/PlayerProgressBar';
+import SettingView from '../components/settingView/SettingView';
 import TrackList from '../components/trackList/TrackList';
 import VolumeControl from '../components/volumeControl/VolumeControl';
 import { BASE_URL } from '../config';
 import { useConfigStore, useStore } from '../store';
+import { TBackdropImage } from '../store/createSettingSlice';
 import { toHHMMSS } from '../utils/funcUtils';
 import './Player.style.css';
 
 function Player() {
-  const [player] = useState<HTMLAudioElement>(new Audio());
+  const [player, setPlayer] = useState<HTMLAudioElement>(new Audio());
   const [showCommentView, setShowCommentView] = useState<boolean>(false);
   const [sidebar, setSidebar] = useState<boolean>(false);
+  const [showSetting, setShowSetting] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
   const [isFavourite, setIsFarourite] = useState<boolean>(false);
   const [playerTime, setPlayerTime] = useState({
@@ -33,14 +37,21 @@ function Player() {
   const [isLoop, setIsLoop] = useState<boolean>(false);
   const [listAudio, setListAudio] = useState<Array<any>>([]);
 
-  const isReadyToDragRef = useRef<boolean>(false);
   const trackloadedRef = useRef<boolean>(false);
   const playerSpanedTimeRef = useRef<number>(0);
 
   const audio = useStore((state) => state.audio);
+  const { theme } = useStore((state) => state.setting);
+  const { backdrop } = useStore((state) => state.setting);
   const updateAudio = useStore((state) => state.updateAudio);
   const config = useConfigStore((state) => state.config);
   const { volume } = useStore((state) => state.volume);
+
+  const btmIconConfig = {
+    size: 25,
+    color: theme.value.content,
+    cursor: 'pointer',
+  };
 
   const toggleSidebar = () => {
     setSidebar((prev) => !prev);
@@ -48,6 +59,10 @@ function Player() {
 
   const toggleCommentView = () => {
     setShowCommentView((prev) => !prev);
+  };
+
+  const toggleSettingView = () => {
+    setShowSetting((prev) => !prev);
   };
 
   const toggleLoop = () => {
@@ -92,6 +107,12 @@ function Player() {
     });
   };
 
+  const cleanPlayerEvent = () => {
+    player.removeEventListener('canplay', () => {});
+    player.removeEventListener('ended', () => {});
+    player.removeEventListener('timeupdate', () => {});
+  };
+
   useEffect(() => {
     axios.get(`${BASE_URL}audio`).then((res) => {
       updateAudio(res.data.data[0]);
@@ -102,11 +123,7 @@ function Player() {
   useEffect(() => {
     assignEventsToPlayer();
 
-    return () => {
-      player.removeEventListener('canplay', () => {});
-      player.removeEventListener('ended', () => {});
-      player.removeEventListener('timeupdate', () => {});
-    };
+    return cleanPlayerEvent;
   }, []);
 
   useEffect(() => {
@@ -126,9 +143,22 @@ function Player() {
     player.volume = volume;
   }, [volume]);
 
+  const renderBackdrop = useMemo(
+    () =>
+      backdrop.type == 'solid'
+        ? `${backdrop.value as string}`
+        : `url('${(backdrop.value as TBackdropImage).imgUrl}') no-repeat`,
+    [backdrop.value]
+  );
+
   return (
-    <div className="wrapper">
-      <div className="player">
+    <div
+      className="wrapper"
+      style={{
+        background: renderBackdrop,
+      }}
+    >
+      <div className="player" style={{ background: theme.value.primary }}>
         <TrackList
           playerPlayStatus={playing}
           listAudio={listAudio}
@@ -136,14 +166,22 @@ function Player() {
           useToggleSidebar={toggleSidebar}
           onRightStatusClick={onPlayPauseClickHandler}
         />
-        <CommentView
-          showCommentView={showCommentView}
-          useToggleCommentView={toggleCommentView}
+        {showCommentView && (
+          <CommentView
+            showCommentView={showCommentView}
+            useToggleCommentView={toggleCommentView}
+          />
+        )}
+        <SettingView
+          showSetting={showSetting}
+          useToggleSetting={toggleSettingView}
         />
         <section className="player-control__top">
           <p className="play-pause-text">
-            <strong>{playing ? 'PLAYING' : 'PAUSED'}</strong>
-            <span>
+            <strong style={{ color: theme.value.content }}>
+              {playing ? 'PLAYING' : 'PAUSED'}
+            </strong>
+            <span style={{ color: theme.value.content }}>
               {playerTime.currentTime} / {playerTime.totalDuration}
             </span>
           </p>
@@ -158,48 +196,50 @@ function Player() {
           ></button> */}
           <VolumeControl />
         </section>
-        <p className="player-track__title">{`${audio?.singer} - ${audio?.name}`}</p>
+        <p
+          style={{ color: theme.value.content }}
+          className="player-track__title"
+        >{`${audio?.singer} - ${audio?.name}`}</p>
         <section className="player-center">
-          <Disc color="#333" size={150} />
+          <Lyrics player={player}/>
+          {/* <Disc color={theme.value.content} size={150} /> */}
         </section>
         <section className="player-control__btm">
           <PlayerProgressBar
             player={player}
             playerTime={playerTime}
-            isReadyToDragRef={isReadyToDragRef}
             playerSpanedTimeRef={playerSpanedTimeRef}
           />
           <div className="player-control__container">
-            <SkipBack size={30} opacity={0.3} color={'#333'} />
+            <SkipBack size={30} opacity={0.3} color={theme.value.content} />
             {!playing ? (
               <Play
                 onClick={onPlayPauseClickHandler}
                 size={30}
-                color={'#333'}
+                color={theme.value.content}
               />
             ) : (
               <Pause
                 onClick={onPlayPauseClickHandler}
                 size={30}
-                color={'#333'}
+                color={theme.value.content}
               />
             )}
-            <SkipForward size={30} opacity={0.3} color={'#333'} />
+            <SkipForward size={30} opacity={0.3} color={theme.value.content} />
           </div>
           <div className="player-nav__btm">
-            <Menu onClick={toggleSidebar} size={25} color={'#333'} />
+            <Menu onClick={toggleSidebar} {...btmIconConfig} />
             <Repeat
               onClick={toggleLoop}
-              size={25}
-              color={'#333'}
+              {...btmIconConfig}
               opacity={isLoop ? 1 : 0.3}
             />
             <MessageCircle
-              onClick={toggleCommentView}
-              size={25}
-              color={'#333'}
+              opacity={0.3}
+              // onClick={toggleCommentView}
+              {...btmIconConfig}
             />
-            <Settings size={25} color={'#333'} />
+            <Settings onClick={toggleSettingView} {...btmIconConfig} />
           </div>
         </section>
       </div>

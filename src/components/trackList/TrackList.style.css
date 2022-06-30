@@ -47,6 +47,10 @@
   align-items: center;
 }
 
+.tracklist-item > span {
+  margin-right: 5px;
+}
+
 .tracklist-btm {
   padding-top: 15px;
 }
@@ -57,21 +61,8 @@
   align-items: center;
 }
 
-.tracklist-btm > div > h3 {
+.tracklist-btm > div > strong {
   margin-left: 5px;
+  font-size: 18px;
   font-weight: 600;
 }
-
-.emptyList {
-  display: flex;
-  flex: 1;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.emptyList > h4 {
-  color: #333;
-  margin-top: 15px;
-}
-

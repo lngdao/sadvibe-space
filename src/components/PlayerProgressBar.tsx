@@ -1,6 +1,7 @@
 import React, {
   MouseEventHandler,
   MutableRefObject,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -14,97 +15,79 @@ import _ from 'lodash';
 interface Props {
   player: HTMLAudioElement;
   playerTime: { currentTime: string; totalDuration: string };
-  isReadyToDragRef: MutableRefObject<boolean>;
   playerSpanedTimeRef: MutableRefObject<number>;
+  dragThrottle?: number;
 }
 
 function PlayerProgressBar({
-  isReadyToDragRef,
   playerSpanedTimeRef,
   player,
   playerTime,
+  dragThrottle = 16,
 }: Props) {
   const { theme } = useStore((state) => state.setting);
   const [progress, setProgress] = useState({
-    isDrag: false,
     percent: 0,
     spanedTime: '00:00',
   });
+  let isReadyToDragRef = useRef<boolean>(false);
 
-  const percentRef = useRef<number | null>(null);
-  const dragTriggerRate = useMemo(() => {
-    return (1 / player.duration) * 100
-  }, [player.duration])
+  // const dragTriggerRate = useMemo(() => {
+  //   return (1 / player.duration) * 100;
+  // }, [player.duration]);
 
-  const onProgressBarClickDown: MouseEventHandler<HTMLDivElement> = (e) => {
-    isReadyToDragRef.current = true;
+  const handleProgBarMove = _.throttle((e: any) => {
+    const progBarEle = document.getElementById('progress')!;
+    document.addEventListener('mouseup', handleProgBarDrop);
+
+    const mouseX = e.clientX;
+    const progressWidth = progBarEle!.getBoundingClientRect().width;
+    const progressLeft = progBarEle!.getBoundingClientRect().left;
+
+    const min = progressLeft;
+    const max = progressWidth + progressLeft;
+
+    if (isReadyToDragRef.current && mouseX >= min && mouseX <= max) {
+      const percent = ((mouseX - min) / progressWidth) * 100;
+      playerSpanedTimeRef.current = (percent / 100) * player.duration;
+      const progressSpanedTime = toHHMMSS(
+        parseInt(((percent / 100) * player.duration).toString(), 10).toString()
+      );
+
+      setProgress((prev) => ({
+        ...prev,
+        percent,
+        spanedTime: progressSpanedTime,
+      }));
+    }
+  }, dragThrottle);
+
+  const handleProgBarDrop = (e: any) => {
+    if (isReadyToDragRef.current) {
+      player.currentTime = playerSpanedTimeRef.current;
+      isReadyToDragRef.current = false;
+
+      e.target.removeEventListener('moveup', handleProgBarDrop);
+      document.removeEventListener('mousemove', handleProgBarMove);
+    }
   };
 
-  const registerDocumentListener = () => {
-    document.addEventListener(
-      'mousemove',
-      _.debounce((e) => {
-        const progress = document.getElementById('progress')!;
+  const onProgressBarClickDown: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      isReadyToDragRef.current = true;
 
-        const clientX = e.clientX;
-        const progressWidth = progress.getBoundingClientRect().width;
-        const progressLeft = progress.getBoundingClientRect().left;
-
-        const min = progressLeft;
-        const max = progressWidth + progressLeft;
-
-        if (isReadyToDragRef.current && clientX >= min && clientX <= max) {
-          const percent = ((clientX - min) / progressWidth) * 100;
-          if (
-            !percentRef.current ||
-            percent - percentRef.current >= dragTriggerRate ||
-            percentRef.current - percent >= dragTriggerRate ||
-            percent == 0
-          ) {
-            playerSpanedTimeRef.current = (percent / 100) * player.duration;
-            const progressSpanedTime = toHHMMSS(
-              parseInt(
-                ((percent / 100) * player.duration).toString(),
-                10
-              ).toString()
-            );
-
-            console.log(percent);
-
-            setProgress({
-              isDrag: true,
-              percent,
-              spanedTime: progressSpanedTime,
-            });
-            percentRef.current = percent;
-          }
-        }
-      })
-    );
-
-    document.addEventListener('mouseup', (e) => {
-      if (isReadyToDragRef.current) {
-        player.currentTime = playerSpanedTimeRef.current;
-        isReadyToDragRef.current = false;
-        // setProgress((prev) => ({ ...prev, isDrag: false }));
+      if (e.type == 'mousedown') {
+        document.addEventListener('mousemove', handleProgBarMove);
       }
-    });
-  };
+    },
+    []
+  );
 
   const updateProgressBar = () => {
     const percent = player.currentTime / player.duration;
     if (!isReadyToDragRef.current)
       setProgress((prev) => ({ ...prev, percent: percent * 100 }));
   };
-
-  useEffect(() => {
-    registerDocumentListener();
-
-    return () => {
-      document.removeEventListener('mousemove', () => {});
-      document.removeEventListener('mouseup', () => {});
-    };
-  });
 
   useEffect(() => {
     updateProgressBar();

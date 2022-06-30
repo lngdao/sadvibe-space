@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ChevronLeft, Frown, Pause, Play } from 'react-feather';
 import { useConfigStore, useStore } from '../../store';
+import Empty from '../Empty';
 import SearchBar from '../searchBar/SearchBar';
 
 import './TrackList.style.css';
@@ -22,8 +23,9 @@ const TrackList = ({
   onRightStatusClick,
 }: Props) => {
   const audio = useStore((state) => state.audio);
+  const { theme } = useStore((state) => state.setting);
   const updateAudio = useStore((state) => state.updateAudio);
-  const updaConfig = useConfigStore((state) => state.updateConfig);
+  const updateConfig = useConfigStore((state) => state.updateConfig);
 
   const [tracklist, setTracklist] = useState(listAudio);
   const [textSearch, setTextSearch] = useState<string>('');
@@ -54,8 +56,9 @@ const TrackList = ({
     const isCurrentAudio = _.isEqual(item, audio);
 
     const iconRightConfig = {
-      size: 17,
-      fill: '#333',
+      size: 15,
+      fill: theme.value.content,
+      color: theme.value.content,
       cursor: 'pointer',
       onClick: onRightStatusClick,
     };
@@ -69,10 +72,11 @@ const TrackList = ({
       <li className="tracklist-item" key={index}>
         <span
           onClick={() => {
-            updaConfig({ onFirstAccess: false });
+            updateConfig({ onFirstAccess: false });
             updateAudio(item);
           }}
           style={{
+            color: isCurrentAudio ? theme.value.content : theme.value.grey,
             fontWeight: isCurrentAudio ? 'bold' : 'normal',
             cursor: 'pointer',
           }}
@@ -89,20 +93,24 @@ const TrackList = ({
     <div
       className="tracklist"
       style={{
+        background: theme.value.primary,
         left: sidebar ? 0 : -550,
         display: sidebar ? 'flex' : 'none',
         // opacity: sidebar ? 1 : 0,
       }}
     >
-      <h2 className="tracklist-title">PLAYLIST</h2>
+      <h2 style={{ color: theme.value.title }} className="tracklist-title">
+        PLAYLIST
+      </h2>
       <section className="tracklist-list">
         {tracklist.length ? (
           <ul>{tracklistElems}</ul>
         ) : (
-          <div className="emptyList">
-            <Frown size={40} />
-            <h4>List is empty</h4>
-          </div>
+          <Empty emptyTxt={'List is empty'} />
+          // <div className="emptyList">
+          //   <Frown color={theme.value.content} size={40} />
+          //   <h4 style={{ color: theme.value.content }}>List is empty</h4>
+          // </div>
         )}
       </section>
       <section className="tracklist-btm">
@@ -112,9 +120,16 @@ const TrackList = ({
           deboundDelay={200}
           onSearch={(text) => setTextSearch(text)}
         />
-        <div style={{ cursor: 'pointer' }} onClick={useToggleSidebar}>
-          <ChevronLeft size={21} color={'#333'} />
-          <h3>Back</h3>
+        <div
+          style={{
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+          }}
+          onClick={useToggleSidebar}
+        >
+          <ChevronLeft size={21} color={theme.value.content} />
+          <strong style={{ color: theme.value.content }}>Back</strong>
         </div>
       </section>
     </div>

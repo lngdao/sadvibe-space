@@ -3,6 +3,7 @@ import { Search, XCircle } from 'react-feather';
 import _ from 'lodash';
 
 import './searchBar.style.css';
+import { useStore } from '../../store';
 
 interface Props {
   onSearch: (text: string) => void;
@@ -18,16 +19,21 @@ function SearchBar({
   deboundDelay = 500,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const { theme } = useStore((state) => state.setting);
 
   const handleOnSearchChange = (e: any) => {
     _.debounce(() => onSearch(e.target.value), deboundDelay)();
   };
 
   return (
-    <div className="searchbar">
+    <div style={{ borderColor: theme.value.grey }} className="searchbar">
       <input
         ref={inputRef}
         type="text"
+        style={{
+          background: theme.value.primary,
+          color: theme.value.content,
+        }}
         className="searchbar-input"
         placeholder="Search"
         onChange={handleOnSearchChange}
@@ -40,10 +46,10 @@ function SearchBar({
             inputRef.current && (inputRef.current.value = '');
           }}
           size={17}
-          style={{ marginRight: 10 }}
+          style={{ marginRight: 10, color: theme.value.content }}
         />
       )}
-      <h3>{rightStatus}</h3>
+      <h3 style={{ color: theme.value.content }}>{rightStatus}</h3>
       {/* <Search size={25} color={'#333'} /> */}
     </div>
   );

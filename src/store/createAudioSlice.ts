@@ -1,11 +1,12 @@
 import { SliceStateCreator } from './index';
 
 export type TAudio = {
-  _id: string
-  name: string
-  singer: string
-  audioUrl: string
-}
+  _id: string;
+  name: string;
+  singer: string;
+  audioUrl: string;
+  lyric: string | null;
+};
 
 export interface IAudioSlice {
   audio: TAudio | null;

@@ -19,7 +19,7 @@
   transition: visibility 0s, opacity 0.3s, transform .2s ease-in-out;
 }
 
-.volume-bar::-webkit-slider-thumb {
+/* .volume-bar::-webkit-slider-thumb {
   cursor: pointer;
   -webkit-appearance: none;
   appearance: none;
@@ -27,4 +27,4 @@
   height: 10px;
   border-radius: 10px;
   background: #333;
-}
+} */
