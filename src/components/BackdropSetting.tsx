@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { callAPI } from '../service/API';
 import styled from 'styled-components';
-import { MoreHorizontal, RotateCcw } from 'react-feather';
+import { RotateCw } from 'react-feather';
+import Switch from 'react-switch';
 import { Oval } from 'react-loader-spinner';
 import { solidColorParamsList } from '../config';
 import { useStore } from '../store';
@@ -9,7 +10,7 @@ import FastImage from './FastImage';
 
 const Title = styled.h4`
   font-weight: 500;
-  font-size: 15px
+  font-size: 15px;
 `;
 
 const GAP_SIZE = 5;
@@ -49,13 +50,13 @@ const Section = ({
           justifyContent: 'space-between',
         }}
       >
-        <Title style={{color: theme.value.title}} children={title} />
-
+        <Title style={{ color: theme.value.title }} children={title} />
+        
         {showReload &&
           (isLoading ? (
             <Oval color={theme.value.content} height={13} width={13} />
           ) : (
-            <RotateCcw
+            <RotateCw
               size={15}
               color={theme.value.content}
               onClick={onShowReloadClick}
@@ -81,6 +82,7 @@ function BackdropSetting() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const updateBackdropConfig = useStore((state) => state.updateBackdropConfig);
+  const { theme, backdrop } = useStore((state) => state.setting);
 
   const getBackdropImg = () => {
     callAPI({
@@ -116,10 +118,12 @@ function BackdropSetting() {
           style={{ height: 50 }}
           src={item.imgUrl}
           imageStyle={{ width: calcImageWidth(), borderRadius: 5 }}
-          onClick={() => updateBackdropConfig({ type: 'image', value: item })}
+          onClick={() =>
+            updateBackdropConfig({ ...backdrop, type: 'image', value: item })
+          }
         />
       )),
-    [listBackdropImg, calcImageWidth()]
+    [listBackdropImg, calcImageWidth(), backdrop]
   );
 
   return (
@@ -129,7 +133,7 @@ function BackdropSetting() {
           <SolidColorSelect
             key={index}
             onClick={() =>
-              updateBackdropConfig({ type: 'solid', value: color })
+              updateBackdropConfig({ ...backdrop, type: 'solid', value: color })
             }
             color={color}
           />
@@ -143,6 +147,20 @@ function BackdropSetting() {
         isLoading={isLoading}
       >
         {renderBackdropImageSection()}
+      </Section>
+      <Section title={'Blur image'} top={15}>
+        <Switch
+          width={58}
+          height={30}
+          onColor={theme.value.switch}
+          uncheckedIcon={false}
+          disabled={backdrop.type == 'solid'}
+          checkedIcon={false}
+          onChange={(check) => {
+            updateBackdropConfig({ ...backdrop, blur: check });
+          }}
+          checked={backdrop.blur}
+        />
       </Section>
     </div>
   );
