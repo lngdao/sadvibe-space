@@ -3,7 +3,6 @@ import React, {
   MutableRefObject,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -17,6 +16,7 @@ interface Props {
   playerTime: { currentTime: string; totalDuration: string };
   playerSpanedTimeRef: MutableRefObject<number>;
   dragThrottle?: number;
+  disable?: boolean
 }
 
 function PlayerProgressBar({
@@ -24,11 +24,12 @@ function PlayerProgressBar({
   player,
   playerTime,
   dragThrottle = 16,
+  disable
 }: Props) {
   const { theme } = useStore((state) => state.setting);
   const [progress, setProgress] = useState({
     percent: 0,
-    spanedTime: '00:00',
+    spanedTime: '0:00',
   });
   let isReadyToDragRef = useRef<boolean>(false);
 
@@ -74,13 +75,13 @@ function PlayerProgressBar({
 
   const onProgressBarClickDown: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
-      isReadyToDragRef.current = true;
+      isReadyToDragRef.current = !disable;
 
       if (e.type == 'mousedown') {
         document.addEventListener('mousemove', handleProgBarMove);
       }
     },
-    []
+    [disable]
   );
 
   const updateProgressBar = () => {
