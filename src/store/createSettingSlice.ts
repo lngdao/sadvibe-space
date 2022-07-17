@@ -15,14 +15,10 @@ type TSolidColor = typeof solidColorParamsList[number];
 type TBackdrop = {
   type: 'solid' | 'image';
   value: TSolidColor | TBackdropImage;
+  blur: boolean
 };
 
-type TThemeValue = {
-  primary: string;
-  title: string;
-  content: string;
-  grey: string;
-};
+type TThemeValue = Record<keyof typeof light, string>;
 
 type TTheme = {
   type: 'dark' | 'light';
@@ -42,7 +38,8 @@ export interface ISettingSlice {
 
 const initBackdrop: TBackdrop = {
   type: 'solid',
-  value: '#839AA8',
+  value: '#999B84',
+  blur: false
 };
 
 const initTheme: TTheme = {
