@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Disc,
   Menu,
   MessageCircle,
   Pause,
@@ -10,6 +9,7 @@ import {
   Settings,
   SkipBack,
   SkipForward,
+  Shuffle,
 } from 'react-feather';
 import CommentView from '../components/commentView/CommentView';
 import Lyrics from '../components/Lyrics';
@@ -20,31 +20,42 @@ import VolumeControl from '../components/volumeControl/VolumeControl';
 import { BASE_URL } from '../config';
 import { useConfigStore, useStore } from '../store';
 import { TBackdropImage } from '../store/createSettingSlice';
-import { toHHMMSS } from '../utils/funcUtils';
+import { getRandomInRange, toHHMMSS } from '../utils/funcUtils';
+import MediaSession, { HAS_MEDIA_SESSION } from '@mebtte/react-media-session';
+
 import './Player.style.css';
+import Tooltip from '../components/Tooltip';
+
+enum LOOP {
+  OFF = 0,
+  ALL,
+  SELF,
+}
 
 function Player() {
-  const [player, setPlayer] = useState<HTMLAudioElement>(new Audio());
+  const [player] = useState<HTMLAudioElement>(new Audio());
   const [showCommentView, setShowCommentView] = useState<boolean>(false);
   const [sidebar, setSidebar] = useState<boolean>(false);
   const [showSetting, setShowSetting] = useState<boolean>(false);
   const [playing, setPlaying] = useState<boolean>(false);
-  const [isFavourite, setIsFarourite] = useState<boolean>(false);
+  const [isEnded, setIsEnded] = useState<boolean>(false);
+  const [loop, setLoop] = useState<LOOP>(LOOP.OFF);
+  const [shuffle, setShuffle] = useState<Boolean>(false);
   const [playerTime, setPlayerTime] = useState({
-    currentTime: '00:00',
-    totalDuration: '00:00',
+    currentTime: '0:00',
+    totalDuration: '0:00',
   });
-  const [isLoop, setIsLoop] = useState<boolean>(false);
-  const [listAudio, setListAudio] = useState<Array<any>>([]);
 
   const trackloadedRef = useRef<boolean>(false);
   const playerSpanedTimeRef = useRef<number>(0);
 
-  const audio = useStore((state) => state.audio);
+  const { audios, currentTrack } = useStore((state) => state.audio);
   const { theme } = useStore((state) => state.setting);
   const { backdrop } = useStore((state) => state.setting);
   const updateAudio = useStore((state) => state.updateAudio);
+  const updateTracklist = useStore((state) => state.updateTracklist);
   const config = useConfigStore((state) => state.config);
+  const updateConfig = useConfigStore((state) => state.updateConfig);
   const { volume } = useStore((state) => state.volume);
 
   const btmIconConfig = {
@@ -65,12 +76,45 @@ function Player() {
     setShowSetting((prev) => !prev);
   };
 
-  const toggleLoop = () => {
-    setIsLoop((prev) => !prev);
+  const handleOnChangeRepeatState = () => {
+    switch (loop) {
+      case LOOP.OFF:
+        return setLoop(LOOP.ALL);
+      case LOOP.ALL:
+        return setLoop(LOOP.SELF);
+      case LOOP.SELF:
+        return setLoop(LOOP.OFF);
+      default:
+        return setLoop(LOOP.OFF);
+    }
   };
 
-  const toggleFavourite = () => {
-    setIsFarourite((prev) => !prev);
+  const handlePlayNextTrack = () => {
+    config.onFirstAccess && updateConfig({ onFirstAccess: false });
+    const currentTrackIdx = audios.indexOf(currentTrack!);
+    let nextTrackIdx;
+    if (shuffle) {
+      nextTrackIdx = getRandomInRange(0, audios.length - 1);
+    } else {
+      if (currentTrackIdx == audios.length - 1) nextTrackIdx = 0;
+      else nextTrackIdx = currentTrackIdx + 1;
+    }
+
+    updateAudio(audios[nextTrackIdx]);
+  };
+
+  const handlePlayPrevTrack = () => {
+    config.onFirstAccess && updateConfig({ onFirstAccess: false });
+    const currentTrackIdx = audios.indexOf(currentTrack!);
+    let prevTrackIdx;
+    if (shuffle) {
+      prevTrackIdx = getRandomInRange(0, audios.length - 1);
+    } else {
+      if (currentTrackIdx == 0) prevTrackIdx = audios.length - 1;
+      else prevTrackIdx = currentTrackIdx - 1;
+    }
+
+    updateAudio(audios[prevTrackIdx]);
   };
 
   const onPlayPauseClickHandler = () => {
@@ -78,13 +122,16 @@ function Player() {
   };
 
   const updatePlayerInfor = () => {
-    const totalDuration = toHHMMSS(
+    let totalDuration = toHHMMSS(
       parseInt(player.duration.toString(), 10).toString()
     );
 
-    const currentTime = toHHMMSS(
+    let currentTime = toHHMMSS(
       parseInt(player.currentTime.toString(), 10).toString()
     );
+
+    if (currentTime.split(':')[0] == 'NaN') currentTime = '_';
+    if (totalDuration.split(':')[0] == 'NaN') totalDuration = '_';
 
     setPlayerTime((prev) => ({ ...prev, currentTime, totalDuration }));
   };
@@ -99,7 +146,8 @@ function Player() {
     });
 
     player.addEventListener('ended', () => {
-      setPlaying(false);
+      setIsEnded(true);
+      // setPlaying(false);
     });
 
     player.addEventListener('timeupdate', () => {
@@ -116,7 +164,7 @@ function Player() {
   useEffect(() => {
     axios.get(`${BASE_URL}audio`).then((res) => {
       updateAudio(res.data.data[0]);
-      setListAudio(res.data.data);
+      updateTracklist(res.data.data);
     });
   }, []);
 
@@ -127,29 +175,53 @@ function Player() {
   }, []);
 
   useEffect(() => {
-    if (playing) player.play();
-    else player.pause();
+    if (isEnded) {
+      setPlaying(false);
+      if (loop == LOOP.ALL) {
+        handlePlayNextTrack();
+      } else if (loop == LOOP.SELF) {
+        setTimeout(() => setPlaying(true), 0);
+      }
+    }
+  }, [isEnded]);
+
+  useEffect(() => {
+    if (playing) {
+      player.play();
+      setIsEnded(false);
+    } else player.pause();
   }, [playing]);
 
   useEffect(() => {
-    if (audio) {
-      player.src = audio.audioUrl;
+    if (currentTrack) {
+      player.src = currentTrack.audioUrl;
       setPlaying(false);
       assignEventsToPlayer();
     }
-  }, [audio]);
+  }, [currentTrack]);
 
   useEffect(() => {
     player.volume = volume;
   }, [volume]);
 
-  const renderBackdrop = useMemo(
-    () =>
-      backdrop.type == 'solid'
-        ? `${backdrop.value as string}`
-        : `url('${(backdrop.value as TBackdropImage).imgUrl}') no-repeat`,
-    [backdrop.value]
-  );
+  const renderBackdrop = useMemo(() => {
+    let backdropVal;
+
+    if (backdrop.type == 'solid') {
+      backdropVal = `${backdrop.value as string}`;
+    } else {
+      if (!backdrop.blur)
+        backdropVal = `url('${
+          (backdrop.value as TBackdropImage).imgUrl
+        }') no-repeat`;
+      else
+        backdropVal = `url('${
+          (backdrop.value as TBackdropImage).imgUrl + '/?blur'
+        }') no-repeat`;
+    }
+
+    return backdropVal;
+  }, [backdrop.value, backdrop.blur]);
 
   return (
     <div
@@ -158,10 +230,32 @@ function Player() {
         background: renderBackdrop,
       }}
     >
+      {/* <MediaSession
+        title="Way back"
+        artist="Vicetone,Cozi Zuehlsdorff"
+        album="Way Back"
+        artwork={[
+          {
+            src: 'cover_large.jpeg',
+            sizes: '256x256,384x384,512x512',
+            type: 'image/jpeg',
+          },
+          {
+            src: 'cover_small.jpeg',
+            sizes: '96x96,128x128,192x192',
+            type: 'image/jpeg',
+          },
+        ]}
+        onPlay={player.play}
+        onPause={player.pause}
+        // onSeekBackward={onSeekBackward}
+        // onSeekForward={onSeekForward}
+        onPreviousTrack={handlePlayPrevTrack}
+        onNextTrack={handlePlayNextTrack}
+      /> */}
       <div className="player" style={{ background: theme.value.primary }}>
         <TrackList
           playerPlayStatus={playing}
-          listAudio={listAudio}
           sidebar={sidebar}
           useToggleSidebar={toggleSidebar}
           onRightStatusClick={onPlayPauseClickHandler}
@@ -185,33 +279,33 @@ function Player() {
               {playerTime.currentTime} / {playerTime.totalDuration}
             </span>
           </p>
-          {/* <button
-            className="heart-icon"
-            dangerouslySetInnerHTML={{
-              __html: isFavourite
-                ? `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 47 45" style="enable-background:new 0 0 47 45;" xml:space="preserve"><path d="M46.8,14.8c0,16-21.3,29.1-22.2,29.7c-0.3,0.2-0.7,0.3-1,0.3c-0.4,0-0.7-0.1-1-0.3C21.6,43.9,0.2,30.8,0.2,14.8 c0-8.3,6-14.6,13.9-14.6c2.6,0,5.1,0.7,7.3,2c0.7,0.4,1.5,0.9,2.1,1.5c0.7-0.6,1.4-1,2.1-1.5c2.2-1.3,4.7-2,7.3-2 C40.8,0.2,46.8,6.5,46.8,14.8z"/></svg>`
-                : `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 47 45" style="enable-background:new 0 0 47 45;" xml:space="preserve"><path d="M32.9,0.2c-2.6,0-5.1,0.7-7.3,2c-0.7,0.4-1.5,0.9-2.1,1.5c-0.7-0.6-1.4-1.1-2.1-1.5c-2.2-1.3-4.7-2-7.3-2 C6.2,0.2,0.2,6.5,0.2,14.8c0,16,21.3,29.1,22.2,29.7c0.3,0.2,0.7,0.3,1,0.3c0.4,0,0.7-0.1,1-0.3c0.9-0.6,22.2-13.7,22.2-29.7 C46.8,6.5,40.8,0.2,32.9,0.2z M23.5,40.4C19.3,37.6,4.2,26.7,4.2,14.8c0-6,4.2-10.6,9.9-10.6c1.9,0,3.7,0.5,5.3,1.4 c1,0.6,1.9,1.3,2.6,2.1c0.8,0.9,2.2,0.9,3,0c0.8-0.8,1.6-1.6,2.6-2.1c1.6-0.9,3.4-1.4,5.3-1.4c5.6,0,9.9,4.6,9.9,10.6 C42.8,26.7,27.6,37.6,23.5,40.4z"/></svg>`,
-            }}
-            onClick={toggleFavourite}
-          ></button> */}
           <VolumeControl />
         </section>
         <p
           style={{ color: theme.value.content }}
           className="player-track__title"
-        >{`${audio?.singer} - ${audio?.name}`}</p>
+        >
+          {currentTrack
+            ? `${currentTrack?.singer} - ${currentTrack?.name}`
+            : 'Loading...'}
+        </p>
         <section className="player-center">
-          <Lyrics player={player}/>
-          {/* <Disc color={theme.value.content} size={150} /> */}
+          <Lyrics player={player} />
         </section>
         <section className="player-control__btm">
           <PlayerProgressBar
             player={player}
             playerTime={playerTime}
             playerSpanedTimeRef={playerSpanedTimeRef}
+            disable={!currentTrack}
           />
           <div className="player-control__container">
-            <SkipBack size={30} opacity={0.3} color={theme.value.content} />
+            <SkipBack
+              size={30}
+              // opacity={0.3}
+              color={theme.value.content}
+              onClick={handlePlayPrevTrack}
+            />
             {!playing ? (
               <Play
                 onClick={onPlayPauseClickHandler}
@@ -225,21 +319,55 @@ function Player() {
                 color={theme.value.content}
               />
             )}
-            <SkipForward size={30} opacity={0.3} color={theme.value.content} />
+            <SkipForward
+              size={30}
+              // opacity={0.3}
+              color={theme.value.content}
+              onClick={handlePlayNextTrack}
+            />
           </div>
           <div className="player-nav__btm">
-            <Menu onClick={toggleSidebar} {...btmIconConfig} />
-            <Repeat
-              onClick={toggleLoop}
-              {...btmIconConfig}
-              opacity={isLoop ? 1 : 0.3}
+            <Tooltip
+              text="Playlist"
+              children={<Menu onClick={toggleSidebar} {...btmIconConfig} />}
             />
-            <MessageCircle
-              opacity={0.3}
-              // onClick={toggleCommentView}
-              {...btmIconConfig}
+            <Tooltip
+              text="Loop"
+              badge={loop == LOOP.SELF ? '1' : undefined}
+              children={
+                <Repeat
+                  onClick={handleOnChangeRepeatState}
+                  {...btmIconConfig}
+                  opacity={loop != LOOP.OFF ? 1 : 0.3}
+                />
+              }
             />
-            <Settings onClick={toggleSettingView} {...btmIconConfig} />
+            <Tooltip
+              text="Shuffle"
+              children={
+                <Shuffle
+                  opacity={shuffle ? 1 : 0.3}
+                  onClick={() => setShuffle((prev) => !prev)}
+                  {...btmIconConfig}
+                />
+              }
+            />
+            <Tooltip
+              text="Discussion"
+              children={
+                <MessageCircle
+                  opacity={0.3}
+                  // onClick={toggleCommentView}
+                  {...btmIconConfig}
+                />
+              }
+            />
+            <Tooltip
+              text="Settings"
+              children={
+                <Settings onClick={toggleSettingView} {...btmIconConfig} />
+              }
+            />
           </div>
         </section>
       </div>
