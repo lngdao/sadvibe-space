@@ -20,17 +20,20 @@ import VolumeControl from '../components/volumeControl/VolumeControl';
 import { BASE_URL } from '../config';
 import { useConfigStore, useStore } from '../store';
 import { TBackdropImage } from '../store/createSettingSlice';
-import { getRandomInRange, toHHMMSS } from '../utils/funcUtils';
+import { getRandomInRange, textWidth, toHHMMSS } from '../utils/funcUtils';
 import MediaSession, { HAS_MEDIA_SESSION } from '@mebtte/react-media-session';
 
 import './Player.style.css';
 import Tooltip from '../components/Tooltip';
+import { TAudio } from '../store/createAudioSlice';
 
 enum LOOP {
   OFF = 0,
   ALL,
   SELF,
 }
+
+const TITLE_WRAPPER_HEIGHT = 30;
 
 function Player() {
   const [player] = useState<HTMLAudioElement>(new Audio());
@@ -74,6 +77,23 @@ function Player() {
 
   const toggleSettingView = () => {
     setShowSetting((prev) => !prev);
+  };
+
+  const handleMarqueeTitleAudio = (currentTrack: TAudio) => {
+    const title = `${currentTrack.singer.toUpperCase()} - ${currentTrack.name.toUpperCase()}`;
+    const titleWrapperWidth = document.querySelector(
+      '.player-track__title'
+    )?.clientWidth;
+    const actualTitleWidth = textWidth(title); // measure text width
+    const titleElm = document.querySelector('.player-track__title > p');
+
+    if (actualTitleWidth > titleWrapperWidth!) {
+      if (!titleElm?.classList.contains('marquee'))
+        titleElm?.classList.add('marquee');
+    } else {
+      if (titleElm?.classList.contains('marquee'))
+        titleElm?.classList.remove('marquee');
+    }
   };
 
   const handleOnChangeRepeatState = () => {
@@ -194,6 +214,7 @@ function Player() {
 
   useEffect(() => {
     if (currentTrack) {
+      handleMarqueeTitleAudio(currentTrack);
       player.src = currentTrack.audioUrl;
       setPlaying(false);
       assignEventsToPlayer();
@@ -281,14 +302,16 @@ function Player() {
           </p>
           <VolumeControl />
         </section>
-        <p
-          style={{ color: theme.value.content }}
+        <div
+          style={{ color: theme.value.content, height: 30 }}
           className="player-track__title"
         >
-          {currentTrack
-            ? `${currentTrack?.singer} - ${currentTrack?.name}`
-            : 'Loading...'}
-        </p>
+          <p>
+            {currentTrack
+              ? `${currentTrack?.singer} - ${currentTrack?.name}`
+              : 'Loading...'}
+          </p>
+        </div>
         <section className="player-center">
           <Lyrics player={player} />
         </section>
@@ -302,7 +325,6 @@ function Player() {
           <div className="player-control__container">
             <SkipBack
               size={30}
-              // opacity={0.3}
               color={theme.value.content}
               onClick={handlePlayPrevTrack}
             />
@@ -321,7 +343,6 @@ function Player() {
             )}
             <SkipForward
               size={30}
-              // opacity={0.3}
               color={theme.value.content}
               onClick={handlePlayNextTrack}
             />
