@@ -9,14 +9,21 @@ export type TAudio = {
 };
 
 export interface IAudioSlice {
-  audio: TAudio | null;
+  audio: { audios: Array<TAudio>; currentTrack: TAudio | null };
   updateAudio: (data: TAudio) => void;
+  updateTracklist: (data: Array<TAudio>) => void;
 }
 
 const createAudioSlice: SliceStateCreator<IAudioSlice> = (set, get) => ({
-  audio: null,
+  audio: { audios: [], currentTrack: null },
   updateAudio(data) {
-    set((state) => ({ audio: data }));
+    set((state) => ({
+      ...state,
+      audio: { ...state.audio, currentTrack: data },
+    }));
+  },
+  updateTracklist(data) {
+    set((state) => ({ ...state, audio: { ...state.audio, audios: data } }));
   },
 });
 

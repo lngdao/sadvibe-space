@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Lrc } from 'react-lrc';
 import styled from 'styled-components';
 import { useStore } from '../store';
@@ -12,20 +12,20 @@ type TLineRenderer = {
 
 const Style = styled.div`
   flex: 1;
-  height: 250px;
+  height: 300px;
   min-width: 0;
   display: flex;
   flex-direction: column;
   position: relative;
   mask-image: linear-gradient(
     transparent,
-    black 0%,
+    black 10%,
     black 85%,
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     transparent,
-    black 0%,
+    black 10%,
     black 85%,
     transparent 100%
   );
@@ -36,17 +36,18 @@ const Style = styled.div`
 `;
 
 function Lyrics({ player }: { player: HTMLAudioElement }) {
-  const currentActiveLineIdxRef = useRef<number>(0);
-  const audio = useStore((state) => state.audio);
+  const [currentActiveLineIdx, setCurrentActiveLineIdx] = useState<number>(0);
+  const { audios, currentTrack } = useStore((state) => state.audio);
+  const { theme } = useStore((state) => state.setting);
 
   const renderLyric = useMemo(() => {
     let lyric = '';
-    if (audio && audio.lyric) {
-      lyric = audio.lyric;
+    if (currentTrack && currentTrack.lyric) {
+      lyric = currentTrack.lyric;
     }
 
     return lyric;
-  }, [audio]);
+  }, [currentTrack]);
 
   const onLineChange = ({
     index,
@@ -54,23 +55,37 @@ function Lyrics({ player }: { player: HTMLAudioElement }) {
     index: number;
     line: import('clrc').LyricLine;
   }) => {
-    currentActiveLineIdxRef.current = index;
+    setCurrentActiveLineIdx(index);
+  };
+
+  const handleOnLyricClick = (line: import('clrc').LyricLine) => {
+    player.currentTime = line.startMillisecond / 1000;
   };
 
   useEffect(() => {}, []);
 
   const lineRenderer = ({ index, active, line }: TLineRenderer) => {
     const lineColor =
-      index <= currentActiveLineIdxRef.current ? 'orange' : 'black';
+      index <= currentActiveLineIdx
+        ? theme.value.highlight
+        : theme.value.content;
 
     return (
-      <h1 style={{ color: lineColor, fontSize: 24, marginBottom: 7 }}>
+      <h1
+        onClick={() => handleOnLyricClick(line)}
+        style={{
+          color: lineColor,
+          fontSize: 24,
+          marginBottom: 7,
+          cursor: 'pointer',
+        }}
+      >
         {line.content}
       </h1>
     );
   };
 
-  return audio?.lyric ? (
+  return currentTrack?.lyric ? (
     <Style>
       <Lrc
         style={{ flex: 1, minHeight: 0 }}
@@ -83,7 +98,10 @@ function Lyrics({ player }: { player: HTMLAudioElement }) {
       />
     </Style>
   ) : (
-    <Empty emptyTxt={'The lyrics have not been updated yet'} />
+    <Empty
+      lottie
+      emptyTxt={currentTrack ? 'The lyrics have not been updated yet' : ''}
+    />
   );
 }
 

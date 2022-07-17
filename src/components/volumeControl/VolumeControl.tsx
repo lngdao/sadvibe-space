@@ -3,6 +3,7 @@ import { Volume, Volume1, Volume2, VolumeX } from 'react-feather';
 import styled from 'styled-components';
 import { dark, light } from '../../config/theme';
 import { useStore } from '../../store';
+import Tooltip from '../Tooltip';
 
 import './VolumeControl.css';
 
@@ -58,23 +59,29 @@ function VolumeControl() {
         setShowVolumeBar(false);
       }}
     >
-      <VolumeBar
-        className={`volume-bar ${theme.type}`}
-        type={'range'}
-        min={0}
-        max={1}
-        value={volume}
-        step={0.02}
-        onChange={(event) => {
-          currentVolume.current = event.target.valueAsNumber;
-          updateVolume({ volume: event.target.valueAsNumber });
-        }}
-        style={{
-          visibility: showVolumeBar ? 'visible' : 'hidden',
-          position: showVolumeBar ? 'relative' : 'absolute',
-          opacity: showVolumeBar ? 1 : 0,
-          transform: `translateX(${showVolumeBar ? '0%' : '-15%'})`,
-        }}
+      <Tooltip
+        text={`${Math.floor(volume * 100)}%`}
+        childWrapperStyle={{width: '70px'}}
+        children={
+          <VolumeBar
+            className={`volume-bar ${theme.type}`}
+            type={'range'}
+            min={0}
+            max={1}
+            value={volume}
+            step={0.02}
+            onChange={(event) => {
+              currentVolume.current = event.target.valueAsNumber;
+              updateVolume({ volume: event.target.valueAsNumber });
+            }}
+            style={{
+              visibility: showVolumeBar ? 'visible' : 'hidden',
+              position: showVolumeBar ? 'relative' : 'absolute',
+              opacity: showVolumeBar ? 1 : 0,
+              transform: `translateX(${showVolumeBar ? '0%' : '-15%'})`,
+            }}
+          />
+        }
       />
       {renderIconVolume()}
     </div>

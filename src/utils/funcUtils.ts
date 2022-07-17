@@ -12,3 +12,13 @@ export const toHHMMSS = (time: string) => {
 
   return (hours > 0 ? hours + ':' : '') + minutes + ':' + secondStr;
 };
+
+export function getRandomInRange(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function openInNewTab(url: string) {
+  window.open(url, '_blank')!.focus();
+}

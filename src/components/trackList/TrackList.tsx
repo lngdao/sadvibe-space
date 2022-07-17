@@ -1,16 +1,16 @@
 import _ from 'lodash';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { ChevronLeft, Frown, Pause, Play } from 'react-feather';
+import React, { useEffect, useState } from 'react';
+import { ChevronLeft, Pause, Play } from 'react-feather';
 import { useConfigStore, useStore } from '../../store';
 import Empty from '../Empty';
 import SearchBar from '../searchBar/SearchBar';
+import Tooltip from '../Tooltip';
 
 import './TrackList.style.css';
 
 interface Props {
   sidebar: boolean;
   useToggleSidebar: () => void;
-  listAudio: Array<any>;
   playerPlayStatus: boolean;
   onRightStatusClick: () => void;
 }
@@ -18,21 +18,20 @@ interface Props {
 const TrackList = ({
   sidebar,
   useToggleSidebar,
-  listAudio,
   playerPlayStatus,
   onRightStatusClick,
 }: Props) => {
-  const audio = useStore((state) => state.audio);
+  const { audios, currentTrack } = useStore((state) => state.audio);
   const { theme } = useStore((state) => state.setting);
   const updateAudio = useStore((state) => state.updateAudio);
   const updateConfig = useConfigStore((state) => state.updateConfig);
 
-  const [tracklist, setTracklist] = useState(listAudio);
+  const [tracklist, setTracklist] = useState(audios);
   const [textSearch, setTextSearch] = useState<string>('');
 
   const handleOnSearch = () => {
     if (textSearch.length) {
-      let listSearch = listAudio.filter((item) => {
+      let listSearch = audios.filter((item) => {
         let audioName = `${item.singer} - ${item.name}`.toLowerCase();
 
         return audioName.includes(textSearch.toLowerCase());
@@ -40,20 +39,20 @@ const TrackList = ({
 
       setTracklist(listSearch);
     } else {
-      setTracklist(listAudio);
+      setTracklist(audios);
     }
   };
 
   useEffect(() => {
-    setTracklist(listAudio);
-  }, [listAudio]);
+    setTracklist(audios);
+  }, [audios]);
 
   useEffect(() => {
     handleOnSearch();
   }, [textSearch]);
 
   const tracklistElems = tracklist.map((item, index) => {
-    const isCurrentAudio = _.isEqual(item, audio);
+    const isCurrentAudio = _.isEqual(item, currentTrack);
 
     const iconRightConfig = {
       size: 15,
@@ -69,6 +68,12 @@ const TrackList = ({
     );
 
     return (
+      // <Tooltip
+      // text={''}
+      // position="left"
+      // fontSize={13}
+      // opacity={0.8}
+      // children={
       <li className="tracklist-item" key={index}>
         <span
           onClick={() => {
@@ -86,6 +91,8 @@ const TrackList = ({
         </span>
         {isCurrentAudio && renderIconRight}
       </li>
+      //   }
+      // />
     );
   });
 
@@ -107,10 +114,6 @@ const TrackList = ({
           <ul>{tracklistElems}</ul>
         ) : (
           <Empty emptyTxt={'List is empty'} />
-          // <div className="emptyList">
-          //   <Frown color={theme.value.content} size={40} />
-          //   <h4 style={{ color: theme.value.content }}>List is empty</h4>
-          // </div>
         )}
       </section>
       <section className="tracklist-btm">

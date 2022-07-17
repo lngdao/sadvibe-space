@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ChevronDown, ChevronLeft, ChevronUp } from 'react-feather';
 import { useConfigStore, useStore } from '../../store';
 import useCollapse from 'react-collapsed';
@@ -10,6 +10,7 @@ import Equalizer from '../Equalizer';
 import RequestSong from '../RequestSong';
 import BackdropSetting from '../BackdropSetting';
 import { callAPI } from '../../service/API';
+import ContactSection from '../ContactSection';
 
 interface Props {
   showSetting: boolean;
@@ -83,7 +84,7 @@ const SettingView = ({ showSetting, useToggleSetting }: Props) => {
         <SettingSection title="Request song" defaultCallapseState={false}>
           <RequestSong />
         </SettingSection>
-        <h3 className="copyright">v0.0.1@lngdao</h3>
+        <ContactSection />
       </section>
       <section className="setting-btm">
         <div style={{ cursor: 'pointer' }} onClick={useToggleSetting}>
