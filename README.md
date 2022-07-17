@@ -41,16 +41,12 @@ npm start
 - <s>progress bar</s>
 - <s>backdrop change</s>
 - <s>Lyrics scroll</s>
-- Next and previous
-- Maybe shuffle feature
+- <s>Maybe shuffle feature</s>
 - Discussion feature
 - Equalizer
 - More compatible with mobile devices
-- Maybe album image instead no lyrics screen
 - Request song
 - Change language
-- Loading
-- Restyle
 
 ### -   Special thanks: [ahmednooor](https://github.com/ahmednooor/music-player-react)
 
