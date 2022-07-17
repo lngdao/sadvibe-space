@@ -88,7 +88,7 @@
 }
 
 .lrc {
-  overflow: scroll!important;
+  overflow: scroll !important;
 }
 
 .lrc::-webkit-scrollbar {
@@ -216,3 +216,42 @@
   margin-top: 15px;
 }
 
+.tooltip-container {
+  position: relative;
+  z-index: 10;
+}
+
+.tooltip-box {
+  position: absolute;
+  font-weight: 600;
+  color: #fff;
+  padding: 3px 5px;
+  border-radius: 5px;
+  top: calc(100% + 10px);
+  z-index: 10;
+  white-space: pre-wrap;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.2s ease-in-out;
+}
+
+.tooltip-badge {
+  position: absolute;
+  top: -2px;
+  right: -7px;
+  background: red;
+  font-size: 11px;
+  width: 16px;
+  height: 16px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+}
+
+.tooltip-box.visible {
+  opacity: 1;
+  visibility: visible;
+}
