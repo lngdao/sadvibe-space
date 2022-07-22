@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Facebook, GitHub, Linkedin } from "react-feather";
-import { useStore } from "../store";
-import { openInNewTab } from "../utils/funcUtils";
-import Tooltip from "./Tooltip";
+import { useState } from 'react';
+import { Facebook, GitHub, Linkedin } from 'react-feather';
+import { useStore } from '../store';
+import { openInNewTab } from '../utils/funcUtils';
+import Tooltip from './Tooltip';
 
 type TContactType = 'github' | 'linkedin' | 'fb';
 type TContactLink = Record<TContactType, { hover: boolean; url: string }>;
@@ -22,9 +22,8 @@ const ContactSection = () => {
   };
 
   return (
-    <section
-      style={{ display: 'flex', alignItems: 'center', flexFlow: 'column' }}
-    >
+    <section className="contact-section">
+      <div className="contact-section__line"></div>
       <h3 className="copyright">{`v${process.env.REACT_APP_VERSION_APP}@lngdao`}</h3>
       <div
         style={{
@@ -116,4 +115,4 @@ const ContactSection = () => {
   );
 };
 
-export default ContactSection
+export default ContactSection;
