@@ -7,6 +7,7 @@ import { Oval } from 'react-loader-spinner';
 import { solidColorParamsList } from '../config';
 import { useStore } from '../store';
 import FastImage from './FastImage';
+import T from '../translation/T';
 
 const Title = styled.h4`
   font-weight: 500;
@@ -128,7 +129,7 @@ function BackdropSetting() {
 
   return (
     <div>
-      <Section title={'Solid color'}>
+      <Section title={T().solid}>
         {solidColorParamsList.map((color, index) => (
           <SolidColorSelect
             key={index}
@@ -140,7 +141,7 @@ function BackdropSetting() {
         ))}
       </Section>
       <Section
-        title={'Random image'}
+        title={T().random_image}
         top={15}
         showReload
         onShowReloadClick={getBackdropImg}
@@ -148,7 +149,7 @@ function BackdropSetting() {
       >
         {renderBackdropImageSection()}
       </Section>
-      <Section title={'Blur image'} top={15}>
+      <Section title={T().blur_image} top={15}>
         <Switch
           width={58}
           height={30}

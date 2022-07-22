@@ -11,6 +11,8 @@ import RequestSong from '../RequestSong';
 import BackdropSetting from '../BackdropSetting';
 import { callAPI } from '../../service/API';
 import ContactSection from '../ContactSection';
+import LanguageSwitch from '../LanguageSwitch';
+import T from '../../translation/T';
 
 interface Props {
   showSetting: boolean;
@@ -46,7 +48,7 @@ const SettingSection = (props: any) => {
 
 const SettingView = ({ showSetting, useToggleSetting }: Props) => {
   const updaConfig = useConfigStore((state) => state.updateConfig);
-  const { theme } = useStore((state) => state.setting);
+  const { theme, lng } = useStore((state) => state.setting);
 
   return (
     <div
@@ -58,30 +60,26 @@ const SettingView = ({ showSetting, useToggleSetting }: Props) => {
         // opacity: sidebar ? 1 : 0,
       }}
     >
-      <h2 className="setting-title" style={{ color: theme.value.title }}>
-        SETTING
+      <h2
+        className="setting-title"
+        style={{ color: theme.value.title }}
+      >
+        {T().setting.toUpperCase()}
       </h2>
       <section className="setting-content">
-        <SettingSection title="Language">
-          <div>
-            <a style={{ color: theme.value.content }} className="lang vi">
-              Tiếng Việt
-            </a>
-            <a style={{ color: theme.value.content }} className="lang en">
-              English
-            </a>
-          </div>
+        <SettingSection title={T().language}>
+          <LanguageSwitch />
         </SettingSection>
-        <SettingSection title="Theme">
+        <SettingSection title={T().theme}>
           <ThemeToggleButton />
         </SettingSection>
-        <SettingSection title="Backdrop" defaultCallapseState={false}>
+        <SettingSection title={T().backdrop} defaultCallapseState={false}>
           <BackdropSetting />
         </SettingSection>
-        <SettingSection title="Equalizer" defaultCallapseState={false}>
+        <SettingSection title={T().equalizer} defaultCallapseState={false}>
           <Equalizer />
         </SettingSection>
-        <SettingSection title="Request song" defaultCallapseState={false}>
+        <SettingSection title={T().request_song} defaultCallapseState={false}>
           <RequestSong />
         </SettingSection>
         <ContactSection />
@@ -89,7 +87,7 @@ const SettingView = ({ showSetting, useToggleSetting }: Props) => {
       <section className="setting-btm">
         <div style={{ cursor: 'pointer' }} onClick={useToggleSetting}>
           <ChevronLeft size={21} color={theme.value.content} />
-          <h3 style={{ color: theme.value.content }}>Back</h3>
+          <h3 style={{ color: theme.value.content }}>{T().back}</h3>
         </div>
       </section>
     </div>

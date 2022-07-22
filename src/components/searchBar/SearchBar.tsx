@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import './searchBar.style.css';
 import { useStore } from '../../store';
+import T from '../../translation/T';
 
 interface Props {
   onSearch: (text: string) => void;
@@ -35,7 +36,7 @@ function SearchBar({
           color: theme.value.content,
         }}
         className="searchbar-input"
-        placeholder="Search"
+        placeholder={T().search}
         onChange={handleOnSearchChange}
       />
       {inputRef.current && !!inputRef.current.value.length && (

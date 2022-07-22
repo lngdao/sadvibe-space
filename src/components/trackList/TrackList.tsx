@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { ChevronLeft, Pause, Play } from 'react-feather';
 import { useConfigStore, useStore } from '../../store';
+import T from '../../translation/T';
 import Empty from '../Empty';
 import SearchBar from '../searchBar/SearchBar';
 import Tooltip from '../Tooltip';
@@ -28,6 +29,8 @@ const TrackList = ({
 
   const [tracklist, setTracklist] = useState(audios);
   const [textSearch, setTextSearch] = useState<string>('');
+
+  const {result} = T()
 
   const handleOnSearch = () => {
     if (textSearch.length) {
@@ -107,19 +110,19 @@ const TrackList = ({
       }}
     >
       <h2 style={{ color: theme.value.title }} className="tracklist-title">
-        PLAYLIST
+        {T().playlist.toUpperCase()}
       </h2>
       <section className="tracklist-list">
         {tracklist.length ? (
           <ul>{tracklistElems}</ul>
         ) : (
-          <Empty emptyTxt={'List is empty'} />
+          <Empty />
         )}
       </section>
       <section className="tracklist-btm">
         <SearchBar
           onClearField={() => setTextSearch('')}
-          rightStatus={textSearch.length ? `${tracklist.length} result` : ''}
+          rightStatus={textSearch.length ? `${tracklist.length} ${result}` : ''}
           deboundDelay={200}
           onSearch={(text) => setTextSearch(text)}
         />
@@ -132,7 +135,7 @@ const TrackList = ({
           onClick={useToggleSidebar}
         >
           <ChevronLeft size={21} color={theme.value.content} />
-          <strong style={{ color: theme.value.content }}>Back</strong>
+          <strong style={{ color: theme.value.content }}>{T().back}</strong>
         </div>
       </section>
     </div>

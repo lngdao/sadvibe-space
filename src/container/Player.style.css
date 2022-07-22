@@ -264,7 +264,7 @@
   border-radius: 5px;
   top: calc(100% + 10px);
   z-index: 10;
-  white-space: pre-wrap;
+  white-space: nowrap;
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s, opacity 0.2s ease-in-out;
@@ -273,7 +273,7 @@
 .tooltip-badge {
   position: absolute;
   top: -2px;
-  right: -7px;
+  right: -5px;
   background: red;
   font-size: 11px;
   width: 16px;

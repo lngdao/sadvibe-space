@@ -26,14 +26,14 @@ import MediaSession, { HAS_MEDIA_SESSION } from '@mebtte/react-media-session';
 import './Player.style.css';
 import Tooltip from '../components/Tooltip';
 import { TAudio } from '../store/createAudioSlice';
+import T from '../translation/T';
+import { callAPI } from '../service/API';
 
 enum LOOP {
   OFF = 0,
   ALL,
   SELF,
 }
-
-const TITLE_WRAPPER_HEIGHT = 30;
 
 function Player() {
   const [player] = useState<HTMLAudioElement>(new Audio());
@@ -60,6 +60,24 @@ function Player() {
   const config = useConfigStore((state) => state.config);
   const updateConfig = useConfigStore((state) => state.updateConfig);
   const { volume } = useStore((state) => state.volume);
+  const {
+    loading,
+    playing_state,
+    paused_state,
+    playlist,
+    loop_feature,
+    shuffle_feature,
+    discussion_feature,
+    setting,
+    not_update_lyrics,
+  } = T();
+
+  const majorBtnCtlConfig = {
+    size: 30,
+    color: theme.value.content,
+    cursor: 'pointer',
+    opacity: currentTrack ? 1 : 0.3,
+  };
 
   const btmIconConfig = {
     size: 25,
@@ -182,9 +200,16 @@ function Player() {
   };
 
   useEffect(() => {
-    axios.get(`${BASE_URL}audio`).then((res) => {
-      updateAudio(res.data.data[0]);
-      updateTracklist(res.data.data);
+    callAPI({
+      api: `audio`,
+      method: 'GET',
+      onSuccess(res) {
+        updateAudio(res.data[0]);
+        updateTracklist(res.data);
+      },
+      onError(err) {
+        console.log(err);
+      },
     });
   }, []);
 
@@ -294,7 +319,9 @@ function Player() {
         <section className="player-control__top">
           <p className="play-pause-text">
             <strong style={{ color: theme.value.content }}>
-              {playing ? 'PLAYING' : 'PAUSED'}
+              {playing
+                ? playing_state.toUpperCase()
+                : paused_state.toUpperCase()}
             </strong>
             <span style={{ color: theme.value.content }}>
               {playerTime.currentTime} / {playerTime.totalDuration}
@@ -309,11 +336,11 @@ function Player() {
           <p>
             {currentTrack
               ? `${currentTrack?.singer} - ${currentTrack?.name}`
-              : 'Loading...'}
+              : `${loading}...`}
           </p>
         </div>
         <section className="player-center">
-          <Lyrics player={player} />
+          <Lyrics player={player} emptyTxt={not_update_lyrics} />
         </section>
         <section className="player-control__btm">
           <PlayerProgressBar
@@ -324,36 +351,32 @@ function Player() {
           />
           <div className="player-control__container">
             <SkipBack
-              size={30}
-              color={theme.value.content}
-              onClick={handlePlayPrevTrack}
+              {...majorBtnCtlConfig}
+              onClick={currentTrack ? handlePlayPrevTrack : undefined}
             />
             {!playing ? (
               <Play
-                onClick={onPlayPauseClickHandler}
-                size={30}
-                color={theme.value.content}
+                {...majorBtnCtlConfig}
+                onClick={currentTrack ? onPlayPauseClickHandler : undefined}
               />
             ) : (
               <Pause
-                onClick={onPlayPauseClickHandler}
-                size={30}
-                color={theme.value.content}
+                {...majorBtnCtlConfig}
+                onClick={currentTrack ? onPlayPauseClickHandler : undefined}
               />
             )}
             <SkipForward
-              size={30}
-              color={theme.value.content}
-              onClick={handlePlayNextTrack}
+              {...majorBtnCtlConfig}
+              onClick={currentTrack ? handlePlayNextTrack : undefined}
             />
           </div>
           <div className="player-nav__btm">
             <Tooltip
-              text="Playlist"
+              text={playlist}
               children={<Menu onClick={toggleSidebar} {...btmIconConfig} />}
             />
             <Tooltip
-              text="Loop"
+              text={loop_feature}
               badge={loop == LOOP.SELF ? '1' : undefined}
               children={
                 <Repeat
@@ -364,7 +387,7 @@ function Player() {
               }
             />
             <Tooltip
-              text="Shuffle"
+              text={shuffle_feature}
               children={
                 <Shuffle
                   opacity={shuffle ? 1 : 0.3}
@@ -374,7 +397,7 @@ function Player() {
               }
             />
             <Tooltip
-              text="Discussion"
+              text={discussion_feature}
               children={
                 <MessageCircle
                   opacity={0.3}
@@ -384,7 +407,7 @@ function Player() {
               }
             />
             <Tooltip
-              text="Settings"
+              text={setting}
               children={
                 <Settings onClick={toggleSettingView} {...btmIconConfig} />
               }

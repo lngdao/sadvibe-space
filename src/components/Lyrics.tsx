@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Lrc } from 'react-lrc';
 import styled from 'styled-components';
 import { useStore } from '../store';
+import T from '../translation/T';
 import Empty from './Empty';
 
 type TLineRenderer = {
@@ -35,7 +36,7 @@ const Style = styled.div`
   }
 `;
 
-function Lyrics({ player }: { player: HTMLAudioElement }) {
+function Lyrics({ player, emptyTxt }: { player: HTMLAudioElement, emptyTxt: string }) {
   const [currentActiveLineIdx, setCurrentActiveLineIdx] = useState<number>(0);
   const { audios, currentTrack } = useStore((state) => state.audio);
   const { theme } = useStore((state) => state.setting);
@@ -100,7 +101,7 @@ function Lyrics({ player }: { player: HTMLAudioElement }) {
   ) : (
     <Empty
       lottie
-      emptyTxt={currentTrack ? 'The lyrics have not been updated yet' : ''}
+      emptyTxt={currentTrack ? emptyTxt : ''}
     />
   );
 }

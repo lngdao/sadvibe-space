@@ -4,13 +4,14 @@ import { useStore } from '../store';
 import Lottie from 'lottie-react';
 import catLightMode from '../asset/lottieJson/catLightMode.json';
 import catDarkMode from '../asset/lottieJson/catDarkMode.json';
+import T from '../translation/T';
 
 interface Props {
-  emptyTxt: string;
+  emptyTxt?: string;
   lottie?: boolean;
 }
 
-function Empty({ emptyTxt, lottie }: Props) {
+function Empty({ emptyTxt = T().list_empty, lottie }: Props) {
   const { theme } = useStore((state) => state.setting);
 
   const jsonThemeData: any = useMemo(

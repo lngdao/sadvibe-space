@@ -15,12 +15,14 @@
     "axios": "^0.27.2",
     "gh-pages": "^4.0.0",
     "html2canvas": "^1.4.1",
+    "i18next": "^21.8.14",
     "lodash": "^4.17.21",
     "lottie-react": "^2.3.1",
     "react": "^18.1.0",
     "react-collapsed": "^3.3.2",
     "react-dom": "^18.1.0",
     "react-feather": "^2.0.10",
+    "react-i18next": "^11.18.1",
     "react-loader-spinner": "^5.1.5",
     "react-lrc": "^2.1.5",
     "react-scripts": "5.0.1",
@@ -38,7 +40,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "res:gen": "node scripts/generateResources.js"
   },
   "eslintConfig": {
     "extends": [
@@ -60,6 +63,8 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.182",
-    "@types/styled-components": "^5.1.25"
+    "@types/styled-components": "^5.1.25",
+    "chalk": "4.0.1",
+    "hjson": "^3.2.2"
   }
 }
