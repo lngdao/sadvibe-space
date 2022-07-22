@@ -69,14 +69,9 @@
   margin-top: 10px;
 }
 
-a.lang {
+a.lng {
   font-size: 15px;
   cursor: pointer;
-}
-
-a.lang:nth-child(2) {
-  margin-left: 10px;
-  text-decoration: underline;
 }
 
 .theme-toggle {
@@ -121,5 +116,18 @@ a.lang:nth-child(2) {
   font-weight: 400;
   color: rgb(151, 151, 151);
   text-align: center;
-  margin-top: 50px;
+}
+
+.contact-section {
+  display: flex;
+  align-items: center;
+  flex-flow: column;
+  margin-top: 40px;
+}
+
+.contact-section__line {
+  width: 60%;
+  height: 1px;
+  background-color: rgb(194, 194, 194);
+  margin-bottom: 20px;
 }
