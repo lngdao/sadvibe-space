@@ -42,11 +42,11 @@ npm start
 - <s>backdrop change</s>
 - <s>Lyrics scroll</s>
 - <s>Maybe shuffle feature</s>
+- <s>Change language</s>
+- More compatible with mobile devices
 - Discussion feature
 - Equalizer
-- More compatible with mobile devices
 - Request song
-- Change language
 
 ### -   Special thanks: [ahmednooor](https://github.com/ahmednooor/music-player-react)
 
