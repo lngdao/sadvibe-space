@@ -7,10 +7,10 @@ A website just to listen to music and chill, build with React.
 
 ## Contents
 
--> [Tech stack](https://github.com/lngdao/fckin-sad-player#tech-stack) <br/>
--> [Setup](https://github.com/lngdao/fckin-sad-player#setup) <br/>
--> [Screenshots](https://github.com/lngdao/fckin-sad-player#screenshots) <br/>
--> [Plans](https://github.com/lngdao/fckin-sad-player#plans) 
+-> [Tech stack](https://github.com/lngdao/sadvibe-space#tech-stack) <br/>
+-> [Setup](https://github.com/lngdao/sadvibe-space#setup) <br/>
+-> [Screenshots](https://github.com/lngdao/sadvibe-space#screenshots) <br/>
+-> [Plans](https://github.com/lngdao/sadvibe-space#plans) 
 
 ## Tech stack
 - Front-end:
