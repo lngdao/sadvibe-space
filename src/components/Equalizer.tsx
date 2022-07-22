@@ -2,7 +2,7 @@ import React from 'react'
 
 function Equalizer() {
   return (
-    <div>In development</div>
+    <div>_</div>
   )
 }
 
