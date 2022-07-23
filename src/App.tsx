@@ -4,11 +4,14 @@ import i18n from './translation';
 import Player from './container/Player';
 
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import ErrorBoundary from './ErrorBoundary';
 
 function App() {
   return (
     <I18nextProvider i18n={i18n}>
-      <Player />
+      <ErrorBoundary>
+        <Player />
+      </ErrorBoundary>
     </I18nextProvider>
   );
 }
