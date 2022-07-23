@@ -3,6 +3,8 @@ export default {
   sadvibe: 'sadvibe',
   vi: 'Vietnamese',
   en: 'English',
+  jp: 'Japanese',
+  kr: 'Korean',
   play: 'Play',
   pause: 'Pause',
   playing_state: 'Playing',

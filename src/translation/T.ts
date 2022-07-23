@@ -8,6 +8,8 @@ const T = () => {
     sadvibe: t("sadvibe"),
     vi: t("vi"),
     en: t("en"),
+    jp: t("jp"),
+    kr: t("kr"),
     play: t("play"),
     pause: t("pause"),
     playing_state: t("playing_state"),

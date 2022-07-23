@@ -3,7 +3,7 @@ export const BASE_URL =
     ? process.env.REACT_APP_BASE_URL_DEV
     : process.env.REACT_APP_BASE_URL_PROD;
 
-export const lngParamsList = <const>['vi', 'en'];
+export const lngParamsList = <const>['vi', 'en', 'jp', 'kr'];
 
 export const solidColorParamsList = <const>[
   '#2D2D2D',
