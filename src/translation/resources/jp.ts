@@ -27,5 +27,7 @@ export default {
   result: '結果',
   not_update_lyrics: '歌詞はまだ更新されていません',
   list_empty: 'リストが空です',
-  loading: '読み込み中'
+  loading: '読み込み中',
+  error_page: 'エラーが発生しました',
+  reload: 'リロード'
 }

@@ -27,5 +27,7 @@ export default {
   result: 'kết quả',
   not_update_lyrics: 'Lời bài hát đang được cập nhật',
   list_empty: 'Danh sách trống',
-  loading: 'Đang tải'
+  loading: 'Đang tải',
+  error_page: 'Có lỗi rồi đại vương ơi!!!',
+  reload: 'Tải lại'
 }

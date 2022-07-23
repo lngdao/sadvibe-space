@@ -33,6 +33,8 @@ const T = () => {
     not_update_lyrics: t("not_update_lyrics"),
     list_empty: t("list_empty"),
     loading: t("loading"),
+    error_page: t("error_page"),
+    reload: t("reload"),
   };
 };
 

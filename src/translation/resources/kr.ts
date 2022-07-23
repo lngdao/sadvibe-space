@@ -27,5 +27,7 @@ export default {
   result: '결과',
   not_update_lyrics: '가사는 아직 업데이트되지 않았습니다',
   list_empty: '목록이 비어 있습니다',
-  loading: '로딩'
+  loading: '로딩',
+  error_page: '오류가 발생했습니다',
+  reload: '재장전'
 }

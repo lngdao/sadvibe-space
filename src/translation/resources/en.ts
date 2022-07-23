@@ -27,5 +27,7 @@ export default {
   result: 'result',
   not_update_lyrics: 'The lyrics have not been updated yet',
   list_empty: 'List is empty',
-  loading: 'Loading'
+  loading: 'Loading',
+  error_page: 'An error occurred',
+  reload: 'Reload'
 };
