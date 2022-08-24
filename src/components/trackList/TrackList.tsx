@@ -2,7 +2,9 @@ import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { ChevronLeft, Pause, Play } from 'react-feather';
 import { useConfigStore, useStore } from '../../store';
+import { TAudio } from '../../store/createAudioSlice';
 import T from '../../translation/T';
+import { measureTextWidth } from '../../utils/funcUtils';
 import Empty from '../Empty';
 import SearchBar from '../searchBar/SearchBar';
 import Tooltip from '../Tooltip';
@@ -23,14 +25,55 @@ const TrackList = ({
   onRightStatusClick,
 }: Props) => {
   const { audios, currentTrack } = useStore((state) => state.audio);
-  const { theme } = useStore((state) => state.setting);
+  const { theme, lng } = useStore((state) => state.setting);
   const updateAudio = useStore((state) => state.updateAudio);
   const updateConfig = useConfigStore((state) => state.updateConfig);
 
-  const [tracklist, setTracklist] = useState(audios);
+  const [tracklist, setTracklist] = useState(audios ?? []);
   const [textSearch, setTextSearch] = useState<string>('');
 
-  const {result} = T()
+  const { result, playing_state, songs } = T();
+
+  const handleMarqueeStatus = (currentTrack: TAudio) => {
+    const title = `${playing_state}: ${currentTrack.singer} - ${currentTrack.name}`;
+    const titleWrapperWidth =
+      document.querySelector('.tracklist-status')?.clientWidth;
+    const actualTitleWidth = measureTextWidth(title);
+    const titleElm = document.querySelector('.tracklist-status__left > p');
+
+    if (actualTitleWidth * 0.8 > titleWrapperWidth! * 0.75) {
+      // measure width text diff with measured value about 20%
+      if (!titleElm?.classList.contains('marquee'))
+        titleElm?.classList.add('marquee');
+    } else {
+      if (titleElm?.classList.contains('marquee'))
+        titleElm?.classList.remove('marquee');
+    }
+  };
+
+  const handleOnStatusLeftClick = () => {
+    const eleIdx = currentTrack
+      ? audios.findIndex((ele) => ele == currentTrack)
+      : 0;
+
+    const targetElm = document.querySelectorAll('.tracklist-item')[
+      eleIdx
+    ] as HTMLElement;
+
+    // targetElm.scrollIntoView()
+
+    const tracklistElm = document.querySelector(
+      '.tracklist-list'
+    ) as HTMLElement;
+    tracklistElm!.scrollTop =
+      targetElm.offsetTop - tracklistElm!.clientHeight / 2;
+  };
+
+  useEffect(() => {
+    if (currentTrack) {
+      handleMarqueeStatus(currentTrack);
+    }
+  }, [currentTrack, lng]);
 
   const handleOnSearch = () => {
     if (textSearch.length) {
@@ -113,11 +156,7 @@ const TrackList = ({
         {T().playlist.toUpperCase()}
       </h2>
       <section className="tracklist-list">
-        {tracklist.length ? (
-          <ul>{tracklistElems}</ul>
-        ) : (
-          <Empty />
-        )}
+        {tracklist.length ? <ul>{tracklistElems}</ul> : <Empty />}
       </section>
       <section className="tracklist-btm">
         <SearchBar
@@ -126,6 +165,32 @@ const TrackList = ({
           deboundDelay={200}
           onSearch={(text) => setTextSearch(text)}
         />
+        <div className="tracklist-status">
+          <div
+            style={{ color: theme.value.highlight }}
+            className="tracklist-status__left"
+            onClick={handleOnStatusLeftClick}
+          >
+            <div
+              style={{
+                background: theme.value.primary,
+                color: theme.value.grey,
+              }}
+            >
+              {playing_state}:
+            </div>
+            <p>
+              {currentTrack &&
+                `${currentTrack?.singer} - ${currentTrack?.name}`}
+            </p>
+          </div>
+          <div
+            style={{ color: theme.value.title }}
+            className="tracklist-status__right"
+          >
+            {audios.length} {songs.toLowerCase()}
+          </div>
+        </div>
         <div
           style={{
             cursor: 'pointer',

@@ -29,5 +29,6 @@ export default {
   list_empty: 'リストが空です',
   loading: '読み込み中',
   error_page: 'エラーが発生しました',
-  reload: 'リロード'
+  reload: 'リロード',
+  songs: '歌'
 }

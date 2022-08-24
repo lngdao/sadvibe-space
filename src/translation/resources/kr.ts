@@ -29,5 +29,6 @@ export default {
   list_empty: '목록이 비어 있습니다',
   loading: '로딩',
   error_page: '오류가 발생했습니다',
-  reload: '재장전'
+  reload: '재장전',
+  songs: '노래'
 }

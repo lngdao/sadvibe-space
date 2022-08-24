@@ -35,6 +35,7 @@ const T = () => {
     loading: t("loading"),
     error_page: t("error_page"),
     reload: t("reload"),
+    songs: t("songs"),
   };
 };
 

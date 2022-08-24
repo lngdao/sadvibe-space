@@ -29,5 +29,6 @@ export default {
   list_empty: 'List is empty',
   loading: 'Loading',
   error_page: 'An error occurred',
-  reload: 'Reload'
+  reload: 'Reload',
+  songs: 'Songs'
 };

@@ -29,5 +29,6 @@ export default {
   list_empty: 'Danh sách trống',
   loading: 'Đang tải',
   error_page: 'Có lỗi rồi đại vương ơi!!!',
-  reload: 'Tải lại'
+  reload: 'Tải lại',
+  songs: 'Bài hát'
 }

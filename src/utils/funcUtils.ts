@@ -23,10 +23,13 @@ export function openInNewTab(url: string) {
   window.open(url, '_blank')!.focus();
 }
 
-export function textWidth(text: string, font: string = "20px Montserrat") {
+export function measureTextWidth(
+  text: string,
+  font: string = '20px Montserrat'
+) {
   const c = document.createElement('canvas');
-  const ctx: any = c.getContext("2d");
+  const ctx: any = c.getContext('2d');
   ctx.font = font;
 
   return ctx.measureText(text).width;
- }
+}

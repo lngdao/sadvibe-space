@@ -26,6 +26,7 @@
   margin-top: 15px;
   overflow: scroll;
   flex: 1;
+  scroll-behavior: smooth;
 }
 
 .tracklist-list::-webkit-scrollbar {
@@ -52,7 +53,7 @@
 }
 
 .tracklist-btm {
-  padding-top: 15px;
+  padding-top: 10px;
 }
 
 .tracklist-btm > div {
@@ -64,5 +65,74 @@
 .tracklist-btm > div > strong {
   margin-left: 5px;
   font-size: 18px;
+  font-weight: 600;
+}
+
+.tracklist-status {
+  margin: 15px 0;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tracklist-status__left {
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  width: 75%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tracklist-status__left > div {
+  padding-right: 7px;
+  position: relative;
+  z-index: 10;
+  /* margin-right: 5px; */
+}
+
+.tracklist-status__left > p.marquee {
+  -moz-animation: marquee 10s linear infinite;
+  -webkit-animation: marquee 10s linear infinite;
+  animation: marquee 9s linear infinite;
+}
+
+@-moz-keyframes marquee {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+}
+
+@-webkit-keyframes marquee {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-100%, 0);
+  }
+}
+
+.tracklist-status__left > p {
+  margin-left: 5px;
+  
+}
+
+.tracklist-status__right {
+  font-size: 15px;
   font-weight: 600;
 }

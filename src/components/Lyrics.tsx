@@ -36,7 +36,13 @@ const Style = styled.div`
   }
 `;
 
-function Lyrics({ player, emptyTxt }: { player: HTMLAudioElement, emptyTxt: string }) {
+function Lyrics({
+  player,
+  emptyTxt,
+}: {
+  player: HTMLAudioElement;
+  emptyTxt: string;
+}) {
   const [currentActiveLineIdx, setCurrentActiveLineIdx] = useState<number>(0);
   const { audios, currentTrack } = useStore((state) => state.audio);
   const { theme } = useStore((state) => state.setting);
@@ -66,6 +72,7 @@ function Lyrics({ player, emptyTxt }: { player: HTMLAudioElement, emptyTxt: stri
   useEffect(() => {}, []);
 
   const lineRenderer = ({ index, active, line }: TLineRenderer) => {
+    const isCurrentActiveLine = index == currentActiveLineIdx;
     const lineColor =
       index <= currentActiveLineIdx
         ? theme.value.highlight
@@ -99,10 +106,7 @@ function Lyrics({ player, emptyTxt }: { player: HTMLAudioElement, emptyTxt: stri
       />
     </Style>
   ) : (
-    <Empty
-      lottie
-      emptyTxt={currentTrack ? emptyTxt : ''}
-    />
+    <Empty lottie emptyTxt={currentTrack ? emptyTxt : ''} />
   );
 }
 

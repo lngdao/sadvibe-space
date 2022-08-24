@@ -20,7 +20,7 @@ import VolumeControl from '../components/volumeControl/VolumeControl';
 import { BASE_URL } from '../config';
 import { useConfigStore, useStore } from '../store';
 import { TBackdropImage } from '../store/createSettingSlice';
-import { getRandomInRange, textWidth, toHHMMSS } from '../utils/funcUtils';
+import { getRandomInRange, measureTextWidth, toHHMMSS } from '../utils/funcUtils';
 import MediaSession, { HAS_MEDIA_SESSION } from '@mebtte/react-media-session';
 
 import './Player.style.css';
@@ -102,7 +102,7 @@ function Player() {
     const titleWrapperWidth = document.querySelector(
       '.player-track__title'
     )?.clientWidth;
-    const actualTitleWidth = textWidth(title); // measure text width
+    const actualTitleWidth = measureTextWidth(title); // measure text width
     const titleElm = document.querySelector('.player-track__title > p');
 
     if (actualTitleWidth > titleWrapperWidth!) {
