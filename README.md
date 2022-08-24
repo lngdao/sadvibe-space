@@ -3,7 +3,7 @@
 
 A website just to listen to music and chill, build with React.
 
-## Take a tea and f**kin' chill here [fckinsadvibe.space](http://fckinsadvibe.space)
+## Take a  ☕  and f**kin' chill here [fckinsadvibe.space](http://fckinsadvibe.space)  🎸
 
 ## Contents
 
